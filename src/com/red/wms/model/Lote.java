@@ -2,6 +2,7 @@ package com.red.wms.model;
 import java.time.LocalDate;
 
 public class Lote {
+	private int id;
 	private String codigo;
 	private LocalDate dataValidade;
 	private Produto produto;
@@ -10,6 +11,12 @@ public class Lote {
 		this.codigo = codigo;
 		this.dataValidade = dataValidade;
 		this.produto = produto;
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
 	}
 	public String getCodigo() {
 		return codigo;

@@ -1,15 +1,24 @@
 package com.red.wms.model;
 
 public class Endereco {
+	private int id;
 	private String bloco;
 	private String posicao;
 	private String nivel;
 	private Pallet pallet;
-	
+
 	public Endereco(String bloco, String posicao, String nivel) {
 		this.bloco = bloco;
 		this.posicao = posicao;
 		this.nivel = nivel;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getBloco() {
@@ -43,5 +52,5 @@ public class Endereco {
 	public void setPallet(Pallet pallet) {
 		this.pallet = pallet;
 	}
-	
+
 }
