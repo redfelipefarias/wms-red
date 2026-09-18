@@ -4,7 +4,7 @@ Projeto de estudo e portfólio: um sistema de gerenciamento de armazém (WMS —
 
 ## 📦 Sobre o projeto
 
-O objetivo é modelar e implementar, de forma incremental, os principais processos de um armazém: cadastro de produtos, controle de lotes (rastreabilidade), movimentação de pallets e gestão de endereços de estoque, com persistência real em banco de dados relacional e regras de negócio que refletem operações reais de um centro de distribuição.
+O objetivo é modelar e implementar, de forma incremental, os principais processos de um armazém: cadastro de produtos, controle de lotes (rastreabilidade), movimentação de pallets e gestão de endereços de estoque, com persistência real em banco de dados relacional, regras de negócio que refletem operações reais de um centro de distribuição, e uma interface funcional de linha de comando.
 
 O projeto é desenvolvido seguindo a filosofia de **MVP (Minimum Viable Product)**: começar com o menor conjunto de funcionalidades que já representa o problema real, evoluindo em versões sucessivas.
 
@@ -44,14 +44,28 @@ src/
     │   ├── LoteDAO.java
     │   ├── PalletDAO.java
     │   └── EnderecoDAO.java
-    └── service/
-        ├── LoteService.java
-        └── EnderecoService.java
+    ├── service/
+    │   ├── LoteService.java
+    │   └── EnderecoService.java
+    └── app/
+        └── Main.java   (interface de linha de comando)
 ```
 
 O projeto segue uma arquitetura em camadas:
 - **DAO (Data Access Object):** cada entidade possui uma classe responsável exclusivamente pela comunicação com o banco de dados (inserir, buscar, atualizar, remover).
 - **Service:** camada responsável pelas regras de negócio, utilizando os DAOs como ferramenta, sem conhecer detalhes de SQL.
+- **App:** interface de linha de comando que permite o cadastro e a consulta de dados de forma interativa, sem exigir alteração de código para uso.
+
+## 🖥️ Interface de linha de comando
+
+A classe `Main` oferece um menu interativo no terminal com as seguintes funcionalidades:
+
+- Cadastro de produtos
+- Listagem de produtos cadastrados
+- Cadastro de lotes, associando-os a um produto já existente
+- Listagem de lotes, exibindo o nome do produto associado e o peso unitário
+
+Essa interface é um protótipo funcional que valida, de ponta a ponta, o funcionamento das camadas de dados e serviço. As próximas interfaces (aplicativo móvel e painel web) reutilizarão a mesma lógica de DAO e Service já implementada.
 
 ## ⚙️ Regras de negócio implementadas
 
@@ -70,7 +84,7 @@ pallet (id, quantidade, lote_id → lote.id)
 endereco (id, bloco, posicao, nivel, peso_maximo, pallet_id → pallet.id, opcional)
 ```
 
-> **Nota de segurança:** as credenciais de conexão com o banco não são versionadas com valores reais — o arquivo de teste utiliza um valor de espaço reservado para a senha, que deve ser preenchido localmente por quem for executar o projeto.
+> **Nota de segurança:** as credenciais de conexão com o banco não são versionadas com valores reais — os arquivos de teste e a interface utilizam um valor de espaço reservado para a senha, que deve ser preenchido localmente por quem for executar o projeto.
 
 ## 🚧 Status atual
 
@@ -80,7 +94,9 @@ endereco (id, bloco, posicao, nivel, peso_maximo, pallet_id → pallet.id, opcio
 - [x] CRUD completo (Create, Read, Update, Delete) para todas as entidades
 - [x] Camada de acesso a dados organizada em DAOs
 - [x] Camada de regras de negócio (Service): ocupação de endereço, FEFO, limite de peso
-- [ ] Interface de uso (aplicativo Android para operadores, dashboard web para gestão)
+- [x] Interface de linha de comando para cadastro e consulta de produtos e lotes
+- [ ] Interface de linha de comando para pallets e endereços (com validação das regras de negócio)
+- [ ] Interface gráfica (aplicativo Android para operadores, dashboard web para gestão)
 
 ## 🎯 Visão de futuro
 
