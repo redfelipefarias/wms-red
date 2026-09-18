@@ -20,17 +20,18 @@ public class EnderecoDAO {
     }
 
     public void inserir(Endereco endereco) throws SQLException {
-        String sql = "INSERT INTO endereco (bloco, posicao, nivel, pallet_id) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO endereco (bloco, posicao, nivel, peso_maximo, pallet_id) VALUES (?, ?, ?, ?, ?)";
 
         PreparedStatement statement = conexao.prepareStatement(sql);
         statement.setString(1, endereco.getBloco());
         statement.setString(2, endereco.getPosicao());
         statement.setString(3, endereco.getNivel());
+        statement.setDouble(4, endereco.getPesoMaximo());
 
         if (endereco.getPallet() != null) {
-            statement.setInt(4, endereco.getPallet().getId());
+            statement.setInt(5, endereco.getPallet().getId());
         } else {
-            statement.setNull(4, Types.INTEGER);
+            statement.setNull(5, Types.INTEGER);
         }
 
         statement.executeUpdate();
@@ -48,10 +49,11 @@ public class EnderecoDAO {
             String bloco = resultado.getString("bloco");
             String posicao = resultado.getString("posicao");
             String nivel = resultado.getString("nivel");
+            double pesoMaximo = resultado.getDouble("peso_maximo");
             int palletId = resultado.getInt("pallet_id");
             boolean temPallet = !resultado.wasNull();
 
-            Endereco endereco = new Endereco(bloco, posicao, nivel);
+            Endereco endereco = new Endereco(bloco, posicao, nivel, pesoMaximo);
             endereco.setId(id);
 
             if (temPallet) {
@@ -63,6 +65,32 @@ public class EnderecoDAO {
         }
 
         return enderecos;
+    }
+
+    public Endereco buscarPorPalletId(int palletId) throws SQLException {
+        String sql = "SELECT * FROM endereco WHERE pallet_id = ?";
+
+        PreparedStatement statement = conexao.prepareStatement(sql);
+        statement.setInt(1, palletId);
+        ResultSet resultado = statement.executeQuery();
+
+        if (resultado.next()) {
+            int id = resultado.getInt("id");
+            String bloco = resultado.getString("bloco");
+            String posicao = resultado.getString("posicao");
+            String nivel = resultado.getString("nivel");
+            double pesoMaximo = resultado.getDouble("peso_maximo");
+
+            Endereco endereco = new Endereco(bloco, posicao, nivel, pesoMaximo);
+            endereco.setId(id);
+
+            Pallet pallet = new Pallet(palletId, null, 0);
+            endereco.setPallet(pallet);
+
+            return endereco;
+        }
+
+        return null;
     }
 
     public void deletar(int id) throws SQLException {

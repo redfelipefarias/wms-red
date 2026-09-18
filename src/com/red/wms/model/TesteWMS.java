@@ -15,12 +15,6 @@ public class TesteWMS {
 		System.out.println(pallet1.getLote().getCodigo());
 		System.out.println(pallet1.getLote().getProduto().getNome());
 		
-		Endereco endereco1 = new Endereco("A20", "21",  "100");
-		System.out.println(endereco1.getBloco());
-		System.out.println(endereco1.getPallet());
-		
-		endereco1.setPallet(pallet1);
-		System.out.println(endereco1.getPallet().getQuantidade());
 	}
 
 }

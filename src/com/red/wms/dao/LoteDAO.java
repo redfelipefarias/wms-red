@@ -53,7 +53,28 @@ public class LoteDAO {
 
         return lotes;
     }
-
+    
+    public List<Lote> buscarPorProdutoOrdenadoPorValidade(int produtoId) throws SQLException {
+    	List<Lote> lotes = new ArrayList<>();
+    	String sql = "SELECT * FROM lote WHERE produto_id = ? ORDER BY data_validade ASC";
+    	
+    	PreparedStatement statement = conexao.prepareStatement(sql);
+    	statement.setInt(1, produtoId);
+    	ResultSet resultado = statement.executeQuery();
+    	
+    	while (resultado.next()) {
+    		int id = resultado.getInt("id");
+    		String codigo = resultado.getString("codigo");
+    		LocalDate dataValidade = resultado .getDate("data_validade").toLocalDate();
+    		
+    		Produto produto = new Produto(produtoId, "", "", 0);
+    		
+    		Lote lote = new Lote(codigo, dataValidade, produto);
+    		lote.setId(id);
+    		lotes.add(lote);
+    	}
+    	return lotes;
+    }
     public void atualizar(Lote lote) throws SQLException {
         String sql = "UPDATE lote SET codigo = ?, data_validade = ?, produto_id = ? WHERE id = ?";
 

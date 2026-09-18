@@ -1,16 +1,19 @@
 package com.red.wms.model;
 
 public class Endereco {
+	
 	private int id;
 	private String bloco;
 	private String posicao;
 	private String nivel;
+	private double pesoMaximo;
 	private Pallet pallet;
 
-	public Endereco(String bloco, String posicao, String nivel) {
+	public Endereco(String bloco, String posicao, String nivel, double pesoMaximo) {
 		this.bloco = bloco;
 		this.posicao = posicao;
 		this.nivel = nivel;
+		this.pesoMaximo = pesoMaximo;
 	}
 
 	public int getId() {
@@ -35,6 +38,14 @@ public class Endereco {
 
 	public void setPosicao(String posicao) {
 		this.posicao = posicao;
+	}
+	
+	public double getPesoMaximo() {
+		return pesoMaximo;
+	}
+
+	public void setPesoMaximo(double pesoMaximo) {
+		this.pesoMaximo = pesoMaximo;
 	}
 
 	public String getNivel() {
