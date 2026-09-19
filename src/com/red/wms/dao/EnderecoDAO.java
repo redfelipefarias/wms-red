@@ -36,6 +36,27 @@ public class EnderecoDAO {
 
         statement.executeUpdate();
     }
+    
+    public void atualizar(Endereco endereco) throws SQLException {
+    	String sql = "UPDATE endereco SET bloco = ?, posicao = ?, nivel = ?, peso_maximo = ?, pallet_id = ? WHERE id = ?";
+    	
+    	PreparedStatement statement = conexao.prepareStatement(sql);
+    	statement.setString(1, endereco.getBloco());
+    	statement.setString(2, endereco.getPosicao());
+    	statement.setString(3, endereco.getNivel());
+    	statement.setDouble(4, endereco.getPesoMaximo());
+    	
+    	if (endereco.getPallet() != null) {
+    		statement.setInt(5, endereco.getPallet().getId());
+    	} else {
+    		statement.setNull(5, Types.INTEGER);
+    	}
+    	
+    	statement.setInt(6,  endereco.getId());
+    	
+    	statement.executeUpdate();
+    	
+    }
 
     public List<Endereco> buscarTodos() throws SQLException {
         List<Endereco> enderecos = new ArrayList<>();

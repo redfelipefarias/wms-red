@@ -11,7 +11,7 @@ public class TesteConexao {
 	public static void main(String[] args) {
 		String url = "jdbc:postgresql://localhost:5432/wms_db";
 		String usuario = "postgres";
-		String senha = "senhaBancoDeDados";
+		String senha = "";
 
 		try {
 			Connection conexao = DriverManager.getConnection(url, usuario, senha);

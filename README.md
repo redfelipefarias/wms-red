@@ -6,7 +6,7 @@ Projeto de estudo e portfólio: um sistema de gerenciamento de armazém (WMS —
 
 O objetivo é modelar e implementar, de forma incremental, os principais processos de um armazém: cadastro de produtos, controle de lotes (rastreabilidade), movimentação de pallets e gestão de endereços de estoque, com persistência real em banco de dados relacional, regras de negócio que refletem operações reais de um centro de distribuição, e uma interface funcional de linha de comando.
 
-O projeto é desenvolvido seguindo a filosofia de **MVP (Minimum Viable Product)**: começar com o menor conjunto de funcionalidades que já representa o problema real, evoluindo em versões sucessivas.
+O projeto é desenvolvido seguindo a filosofia de **MVP (Minimum Viable Product)**: começar com o menor conjunto de funcionalidades que já representa o problema real, evoluindo em versões sucessivas, numeradas seguindo o padrão de **Versionamento Semântico** (`MAJOR.MINOR.PATCH`).
 
 ## 🧱 Modelo de domínio
 
@@ -58,14 +58,17 @@ O projeto segue uma arquitetura em camadas:
 
 ## 🖥️ Interface de linha de comando
 
-A classe `Main` oferece um menu interativo no terminal com as seguintes funcionalidades:
+A classe `Main` oferece um menu interativo no terminal com o ciclo completo do fluxo de armazenagem:
 
-- Cadastro de produtos
-- Listagem de produtos cadastrados
-- Cadastro de lotes, associando-os a um produto já existente
-- Listagem de lotes, exibindo o nome do produto associado e o peso unitário
+1. Cadastrar produto
+2. Listar produtos
+3. Cadastrar lote (associado a um produto existente)
+4. Listar lotes (com nome do produto e peso unitário)
+5. Cadastrar pallet (associado a um lote existente)
+6. Cadastrar endereço (com limite de peso configurável)
+7. Associar pallet a endereço — aplica automaticamente as regras de negócio (ocupação e limite de peso)
 
-Essa interface é um protótipo funcional que valida, de ponta a ponta, o funcionamento das camadas de dados e serviço. As próximas interfaces (aplicativo móvel e painel web) reutilizarão a mesma lógica de DAO e Service já implementada.
+Essa interface é um protótipo funcional que valida, de ponta a ponta, o funcionamento das camadas de dados, serviço e regras de negócio. As próximas interfaces (aplicativo móvel e painel web) reutilizarão a mesma lógica de DAO e Service já implementada, cada uma voltada ao seu público (operadores de armazém e gestores, respectivamente).
 
 ## ⚙️ Regras de negócio implementadas
 
@@ -86,6 +89,14 @@ endereco (id, bloco, posicao, nivel, peso_maximo, pallet_id → pallet.id, opcio
 
 > **Nota de segurança:** as credenciais de conexão com o banco não são versionadas com valores reais — os arquivos de teste e a interface utilizam um valor de espaço reservado para a senha, que deve ser preenchido localmente por quem for executar o projeto.
 
+## 🏷️ Versionamento
+
+Este projeto segue o [Versionamento Semântico](https://semver.org/lang/pt-BR/) (`MAJOR.MINOR.PATCH`):
+
+| Versão | Marco |
+|---|---|
+| `v0.1.0` | MVP completo: modelagem, banco de dados, DAOs, regras de negócio e interface de linha de comando funcionando de ponta a ponta |
+
 ## 🚧 Status atual
 
 - [x] Modelagem de domínio (Produto, Lote, Pallet, Endereço)
@@ -94,15 +105,15 @@ endereco (id, bloco, posicao, nivel, peso_maximo, pallet_id → pallet.id, opcio
 - [x] CRUD completo (Create, Read, Update, Delete) para todas as entidades
 - [x] Camada de acesso a dados organizada em DAOs
 - [x] Camada de regras de negócio (Service): ocupação de endereço, FEFO, limite de peso
-- [x] Interface de linha de comando para cadastro e consulta de produtos e lotes
-- [ ] Interface de linha de comando para pallets e endereços (com validação das regras de negócio)
+- [x] Interface de linha de comando completa (produtos, lotes, pallets, endereços e associação com regras aplicadas)
+- [ ] Autenticação e perfis de usuário (separador/conferente vs. gestor/administrador)
 - [ ] Interface gráfica (aplicativo Android para operadores, dashboard web para gestão)
 
 ## 🎯 Visão de futuro
 
 O projeto tem como objetivo de longo prazo evoluir para um sistema comercialmente viável, capaz de atender múltiplas empresas com diferentes convenções de endereçamento e processos logísticos — motivo pelo qual campos configuráveis (como a identificação de blocos/vagas e limites de peso) foram desenhados de forma flexível desde o início, cabendo ao sistema apenas registrar e validar, nunca impor, a estrutura física definida por cada cliente.
 
-A camada de persistência foi construída sobre PostgreSQL visando compatibilidade com ambientes multiusuário, permitindo, no futuro, que diferentes interfaces (aplicativo móvel para operadores e painel web para gestores) compartilhem a mesma base de dados e regras de negócio centralizadas.
+Em um WMS real, diferentes perfis de usuário utilizam interfaces distintas: operadores de armazém (separadores, conferentes) utilizam telas simples e rápidas, tipicamente em coletores com leitor de código de barras; gestores e administradores utilizam painéis mais completos, com cadastros, relatórios e configurações. A camada de persistência foi construída sobre PostgreSQL visando compatibilidade com ambientes multiusuário, permitindo que essas interfaces futuras compartilhem a mesma base de dados e regras de negócio centralizadas.
 
 ---
 
