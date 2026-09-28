@@ -49,6 +49,48 @@ public class PalletDAO {
 
         return pallets;
     }
+    
+    public Pallet buscarPorId(int id) throws SQLException {
+        String sql = "SELECT * FROM pallet WHERE id = ?";
+
+        PreparedStatement statement = conexao.prepareStatement(sql);
+        statement.setInt(1, id);
+        ResultSet resultado = statement.executeQuery();
+
+        if (resultado.next()) {
+            int quantidade = resultado.getInt("quantidade");
+            int loteId = resultado.getInt("lote_id");
+
+            Lote lote = new Lote("", null, null);
+            lote.setId(loteId);
+
+            Pallet pallet = new Pallet(id, lote, quantidade);
+            return pallet;
+        }
+
+        return null;
+    }
+    
+    public List<Pallet> buscarPorLoteId(int loteId) throws SQLException {
+    	List<Pallet> pallets = new ArrayList<>();
+    	String sql = "SELECT * FROM pallet WHERE lote_id = ?";
+    	
+    	PreparedStatement statement = conexao.prepareStatement(sql);
+    	statement.setInt(1, loteId);;
+    	ResultSet resultado = statement.executeQuery();
+//    			
+    	while (resultado.next()) {
+    		int id = resultado.getInt("id");
+    		int quantidade = resultado.getInt("quantidade");
+    		
+    		Lote lote = new Lote("", null, null);
+    		lote.setId(loteId);
+    		
+    		Pallet pallet = new Pallet(id, lote, quantidade);
+    		pallets.add(pallet);
+    	}
+    	return pallets;
+    }
 
     public void atualizar(Pallet pallet) throws SQLException {
         String sql = "UPDATE pallet SET quantidade = ?, lote_id = ? WHERE id = ?";

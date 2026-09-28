@@ -87,6 +87,35 @@ public class EnderecoDAO {
 
         return enderecos;
     }
+    
+    public Endereco buscarPorId(int id) throws SQLException {
+        String sql = "SELECT * FROM endereco WHERE id = ?";
+
+        PreparedStatement statement = conexao.prepareStatement(sql);
+        statement.setInt(1, id);
+        ResultSet resultado = statement.executeQuery();
+
+        if (resultado.next()) {
+            String bloco = resultado.getString("bloco");
+            String posicao = resultado.getString("posicao");
+            String nivel = resultado.getString("nivel");
+            double pesoMaximo = resultado.getDouble("peso_maximo");
+            int palletId = resultado.getInt("pallet_id");
+            boolean temPallet = !resultado.wasNull();
+
+            Endereco endereco = new Endereco(bloco, posicao, nivel, pesoMaximo);
+            endereco.setId(id);
+
+            if (temPallet) {
+                Pallet pallet = new Pallet(palletId, null, 0);
+                endereco.setPallet(pallet);
+            }
+
+            return endereco;
+        }
+
+        return null;
+    }
 
     public Endereco buscarPorPalletId(int palletId) throws SQLException {
         String sql = "SELECT * FROM endereco WHERE pallet_id = ?";

@@ -16,13 +16,14 @@ import com.red.wms.model.Lote;
 import com.red.wms.model.Pallet;
 import com.red.wms.model.Produto;
 import com.red.wms.service.EnderecoService;
+import com.red.wms.service.EstoqueService;
 
 public class Main {
 
     public static void main(String[] args) {
         String url = "jdbc:postgresql://localhost:5432/wms_db";
         String usuario = "postgres";
-        String senha = "";
+        String senha = "senhabancodedados";
 
         Scanner scanner = new Scanner(System.in);
         boolean continuar = true;
@@ -34,6 +35,7 @@ public class Main {
             PalletDAO palletDAO = new PalletDAO(conexao);
             EnderecoDAO enderecoDAO = new EnderecoDAO(conexao);
             EnderecoService enderecoService = new EnderecoService(conexao);
+            EstoqueService estoqueService = new EstoqueService(conexao);
 
             while (continuar) {
                 System.out.println("\n===== WMS - MENU PRINCIPAL =====");
@@ -44,6 +46,7 @@ public class Main {
                 System.out.println("5. Cadastrar pallet");
                 System.out.println("6. Cadastrar endereco");
                 System.out.println("7. Associar pallet a endereco");
+                System.out.println("8. Separar produto (retirar do estoque)");
                 System.out.println("0. Sair");
                 System.out.print("Escolha uma opcao: ");
 
@@ -190,6 +193,28 @@ public class Main {
                             System.out.println("Pallet associado ao endereco com sucesso!");
                         } catch (IllegalStateException e) {
                             System.out.println("Nao foi possivel associar: " + e.getMessage());
+                        }
+                        break;
+
+                    case 8:
+                        List<Produto> produtosParaSeparar = produtoDAO.buscarTodos();
+                        System.out.println("\n--- Produtos disponiveis ---");
+                        for (Produto produto : produtosParaSeparar) {
+                            System.out.println(produto.getId() + " - " + produto.getNome());
+                        }
+
+                        System.out.print("Digite o id do produto a separar: ");
+                        int produtoIdSeparar = scanner.nextInt();
+                        scanner.nextLine();
+
+                        System.out.print("Quantidade desejada: ");
+                        int quantidadeDesejada = scanner.nextInt();
+                        scanner.nextLine();
+
+                        try {
+                            estoqueService.separarProduto(produtoIdSeparar, quantidadeDesejada);
+                        } catch (IllegalStateException e) {
+                            System.out.println("Nao foi possivel separar: " + e.getMessage());
                         }
                         break;
 

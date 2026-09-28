@@ -26,28 +26,10 @@ public class EnderecoService {
     public double calcularPesoDoPallet(Pallet pallet) throws SQLException {
         int loteId = pallet.getLote().getId();
 
-        Lote lote = buscarLotePorId(loteId);
-        Produto produto = buscarProdutoPorId(lote.getProduto().getId());
+        Lote lote = loteDAO.buscarPorId(loteId);
+        Produto produto = produtoDAO.buscarPorId(lote.getProduto().getId());
 
         return pallet.getQuantidade() * produto.getPeso();
-    }
-
-    private Lote buscarLotePorId(int loteId) throws SQLException {
-        for (Lote lote : loteDAO.buscarTodos()) {
-            if (lote.getId() == loteId) {
-                return lote;
-            }
-        }
-        throw new IllegalStateException("Lote id " + loteId + " nao encontrado");
-    }
-
-    private Produto buscarProdutoPorId(int produtoId) throws SQLException {
-        for (Produto produto : produtoDAO.buscarTodos()) {
-            if (produto.getId() == produtoId) {
-                return produto;
-            }
-        }
-        throw new IllegalStateException("Produto id " + produtoId + " nao encontrado");
     }
 
     public void associarPallet(Endereco endereco, Pallet pallet) throws SQLException {
